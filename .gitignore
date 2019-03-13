@@ -3,3 +3,9 @@
 
 # Vendor modules
 vendor/
+
+# Generated files
+generated/controllers/*.go
+generated/models/*.go
+generated/router/*.go
+generated/store/*.go

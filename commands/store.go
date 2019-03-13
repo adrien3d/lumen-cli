@@ -6,6 +6,6 @@ import (
 	"strings"
 )
 
-func GenerateStore(cmd *cobra.Command, args []string) {
+func StoreCmd(cmd *cobra.Command, args []string) {
 	fmt.Println("Generating Store: " + strings.Join(args, " "))
 }

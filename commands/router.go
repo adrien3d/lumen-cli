@@ -6,6 +6,6 @@ import (
 	"strings"
 )
 
-func GenerateRouter(cmd *cobra.Command, args []string) {
+func RouterCmd(cmd *cobra.Command, args []string) {
 	fmt.Println("Generating Router: " + strings.Join(args, " "))
 }

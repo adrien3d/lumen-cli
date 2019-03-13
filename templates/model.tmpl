@@ -1,0 +1,13 @@
+package models
+
+type {{ title .Name }} struct {
+	Id            string `json:"id" bson:"_id,omitempty" valid:"-"`
+	FirstName     string `json:"first_name" bson:"first_name"`
+	LastName      string `json:"last_name" bson:"last_name"`
+	Password      string `json:"password" bson:"password" valid:"required"`
+	Email         string `json:"email" bson:"email" valid:"email,required"`
+	Phone         string `json:"phone" bson:"phone"`
+}
+
+// {{ title .Name }}sCollection represents a specific MongoDB collection
+const {{ title .Name }}sCollection = "{{ toLower .Name }}s"

@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 )
 
-func GenerateController(cmd *cobra.Command, args []string) {
+func ControllerCmd(cmd *cobra.Command, args []string) {
 	//fmt.Println("Generating Controller: " + strings.Join(args, " "))
 	shell := ishell.New()
 

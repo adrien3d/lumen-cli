@@ -11,7 +11,7 @@ func main() {
 		Short: `Generating controller`,
 		Long:  `Generates a controller with multiple methods`,
 		Args:  cobra.MinimumNArgs(0),
-		Run:   commands.GenerateController,
+		Run:   commands.ControllerCmd,
 	}
 
 	var cmdModel = &cobra.Command{
@@ -19,7 +19,7 @@ func main() {
 		Short: `Generating model`,
 		Long:  "Generates a model",
 		Args:  cobra.MinimumNArgs(0),
-		Run:   commands.GenerateModel,
+		Run:   commands.ModelCmd,
 	}
 
 	var cmdRouter = &cobra.Command{
@@ -27,7 +27,7 @@ func main() {
 		Short: `Generating router`,
 		Long:  `Generates router methods`,
 		Args:  cobra.MinimumNArgs(0),
-		Run:   commands.GenerateRouter,
+		Run:   commands.RouterCmd,
 	}
 
 	var cmdStore = &cobra.Command{
@@ -35,7 +35,7 @@ func main() {
 		Short: `Generating store`,
 		Long:  `Generates store methods`,
 		Args:  cobra.MinimumNArgs(0),
-		Run:   commands.GenerateStore,
+		Run:   commands.StoreCmd,
 	}
 
 	var rootCmd = &cobra.Command{
