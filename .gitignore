@@ -1,2 +1,5 @@
 # GoLand generated files
 .idea/
+
+# Vendor modules
+vendor/
