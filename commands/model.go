@@ -39,12 +39,6 @@ var funcMap = template.FuncMap{
 }
 
 func generateModelFile(model Model) {
-	/*
-		for _, field := range model.Fields {
-			fmt.Println(field)
-			//f.WriteString(field.Name)
-		}*/
-
 	path := filepath.Join("templates", "model.tmpl")
 	body, _ := ioutil.ReadFile(path)
 	tmpl, _ := template.New("model").Funcs(funcMap).Parse(string(body))
