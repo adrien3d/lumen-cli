@@ -1,0 +1,3 @@
+[submodule "base-api"]
+	path = base-api
+	url = https://github.com/adrien3d/base-api
