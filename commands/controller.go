@@ -1,34 +1,63 @@
 package commands
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/abiosoft/ishell"
+	"github.com/adrien3d/lumen/utils"
+	"github.com/gedex/inflector"
 	"github.com/spf13/cobra"
+	"go/format"
+	"gopkg.in/godo.v2/util"
 	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
+	"text/template"
 )
 
-func generateControllerFile(methods []string) {
-	/*methodSlice := make([]string, len(methods))
-	for _, method := range methods {
-		methodSlice = append(methodSlice, method)
-	}*/
+type SelectedMethods struct {
+	ModelName string
+	Methods   []*Method
+}
 
-	for _, method := range methods {
-		switch method {
-		case "Create":
-			break
-		case "Get":
-			break
-		case "Update":
-			break
-		case "Delete":
-			break
+type Method struct {
+	Name string
+}
+
+func generateControllerFile(filename string, selected []string) {
+	fmt.Println("Filename for controller:", filename)
+
+	methods := []*Method{}
+	selectedMethods := SelectedMethods{strings.ToLower(filename), methods}
+	for _, methodName := range selected {
+		methodName = methodName[0 : len(methodName)-len(filename)]
+		selectedMethods.Methods = append(selectedMethods.Methods, &Method{methodName})
+	}
+
+	path := filepath.Join("templates", "controller.tmpl")
+	body, _ := ioutil.ReadFile(path)
+	tmpl, err := template.New("model").Funcs(funcMap).Parse(string(body))
+	utils.Check(err)
+
+	var buf bytes.Buffer
+	err = tmpl.Execute(&buf, selectedMethods)
+	utils.Check(err)
+
+	src, _ := format.Source(buf.Bytes())
+	dstPath := filepath.Join("generated/controllers/", strings.ToLower(filename)+".go")
+
+	if !util.FileExists(filepath.Dir(dstPath)) {
+		if err := os.Mkdir(filepath.Dir(dstPath), 0644); err != nil {
+			fmt.Println(err)
 		}
+	}
+	if err := ioutil.WriteFile(dstPath, src, 0644); err != nil {
+		fmt.Println(err)
 	}
 }
 
 func ControllerCmd(cmd *cobra.Command, args []string) {
-	//fmt.Println("Generating Controller: " + strings.Join(args, " "))
 	shell := ishell.New()
 
 	shell.Println("Generating Controller")
@@ -44,11 +73,12 @@ func ControllerCmd(cmd *cobra.Command, args []string) {
 		fileNames = append(fileNames, file.Name())
 	}
 
-	choice := shell.MultiChoice(fileNames, "Please select ?")
+	// Step 1: Ask user which model to use
+	choice := shell.MultiChoice(fileNames, "Please select the model you want to generate the matching controller:")
+	fileNames[choice] = strings.Title(inflector.Singularize(strings.TrimRight(fileNames[choice], ".go")))
 
-	shell.Println(fileNames[choice])
-
-	methods := []string{"Create", "Get", "Update", "Delete"}
+	//Step 2
+	methods := []string{"Create" + fileNames[choice], "Get" + fileNames[choice], "GetAll" + fileNames[choice] + "", "Update" + fileNames[choice], "Delete" + fileNames[choice]}
 	choices := shell.Checklist(methods,
 		"What method do you want to implement ? (space to select/deselect)",
 		nil)
@@ -58,15 +88,10 @@ func ControllerCmd(cmd *cobra.Command, args []string) {
 		}
 		return
 	}
-	selected := out()
-	//shell.Println("Your choices are", strings.Join(out(), ", "))
+	selectedMethods := out()
 
-	/*methodSlice := make([]string, len(selected))
-	for _, method := range selected {
-		methodSlice = append(methodSlice, method)
-	}*/
-
-	generateControllerFile( /*methodSlice*/ selected)
+	generateControllerFile(fileNames[choice], selectedMethods)
+	os.Exit(1)
 
 	shell.Run()
 }

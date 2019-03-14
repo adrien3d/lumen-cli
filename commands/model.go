@@ -36,6 +36,7 @@ var funcMap = template.FuncMap{
 	"toLowerCamelCase": utils.CamelToLowerCamel,
 	"toOriginalCase":   utils.CamelToOriginal,
 	"toSnakeCase":      snaker.CamelToSnake,
+	"firstChar":        utils.GetFirstChar,
 }
 
 func generateModelFile(model Model) {
@@ -59,7 +60,6 @@ func generateModelFile(model Model) {
 	if err := ioutil.WriteFile(dstPath, src, 0644); err != nil {
 		fmt.Println(err)
 	}
-
 }
 
 func ModelCmd(cmd *cobra.Command, args []string) {

@@ -1,9 +1,9 @@
 package models
 
 type {{ title .Name }} struct {
-{{ range .Fields }}
-    {{ title .Name }}  {{ .Type }}  `json:"{{ toLower .Name }}" bson:"{{if .IsId}}_id{{else}}{{ toLower .Name }}{{end}}" {{ if .Required }}valid:"required"{{ end }}`
-{{ end }}
+{{- range .Fields }}
+{{ title .Name }}  {{ .Type }}  `json:"{{ toLower .Name }}" bson:"{{if .IsId}}_id{{else}}{{ toLower .Name }}{{end}}" {{ if .Required }}valid:"required"{{ end }}`
+{{- end }}
 }
 
 // {{ title .Name }}sCollection represents a specific MongoDB collection

@@ -37,3 +37,7 @@ func CamelToOriginal(s string) string {
 
 	return strings.Join(words, " ")
 }
+
+func GetFirstChar(s string) string {
+	return s[0:1]
+}

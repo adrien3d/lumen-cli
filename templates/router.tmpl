@@ -1,0 +1,10 @@
+        func ({{ firstChar $.ModelName }}c {{ title $.ModelName }}Controller) Get{{ title $.ModelName }}(c *gin.Context) {
+        	{{ $.ModelName }}, err := store.Find{{ title $.ModelName }}ById(c, c.Param("id"))
+
+        	if err != nil {
+        		c.AbortWithError(http.StatusNotFound, helpers.ErrorWithCode("{{ $.ModelName }}_not_found", "The {{ $.ModelName }} does not exist", err))
+        		return
+        	}
+
+        	c.JSON(http.StatusOK, {{ $.ModelName }})
+        }

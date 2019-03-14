@@ -1,0 +1,10 @@
+package controllers
+
+{{- range .Methods }}
+    {{ if eq .Name "Create" }}
+    {{ else if eq .Name "Get" }}
+    {{ else if eq .Name "GetAll" }}
+    {{ else if eq .Name "Update" }}
+    {{ else if eq .Name "Delete" }}
+    {{ end }}
+{{- end }}
