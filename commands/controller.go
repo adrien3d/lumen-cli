@@ -69,25 +69,21 @@ func ControllerCmd(cmd *cobra.Command, args []string) {
 	var fileNames []string
 	for _, file := range files {
 		fmt.Println(file.Name())
-		fileNames = append(fileNames, file.Name())
+		fileNames = append(fileNames, strings.Title(inflector.Singularize(strings.TrimRight(file.Name(), ".go"))))
 	}
 
 	// Step 1: Ask user which model to use
 	choice := shell.MultiChoice(fileNames, "Please select the model you want to generate the matching controller:")
-	fileNames[choice] = strings.Title(inflector.Singularize(strings.TrimRight(fileNames[choice], ".go")))
 
-	//Step 2
+	//Step 2: Select methods to generate
 	methods := []string{"Create" + fileNames[choice], "Get" + fileNames[choice], "GetAll" + fileNames[choice], "Update" + fileNames[choice], "Delete" + fileNames[choice]}
 	choices := shell.Checklist(methods,
 		"What method do you want to implement ? (space to select/deselect)",
 		nil)
-	out := func() (c []string) {
-		for _, v := range choices {
-			c = append(c, methods[v])
-		}
-		return
+	var selectedMethods []string
+	for _, v := range choices {
+		selectedMethods = append(selectedMethods, methods[v])
 	}
-	selectedMethods := out()
 
 	generateControllerFile(fileNames[choice], selectedMethods)
 	os.Exit(1)
