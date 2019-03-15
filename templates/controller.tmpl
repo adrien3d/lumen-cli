@@ -1,10 +1,105 @@
 package controllers
 
+import (
+	"github.com/adrien3d/base-api/helpers"
+	"github.com/adrien3d/base-api/helpers/params"
+	"github.com/adrien3d/base-api/models"
+	"github.com/adrien3d/base-api/store"
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
+
+
+// {{ title $.ModelName }}Controller holds all controller functions related to the {{ $.ModelName }} entity
+type {{ title $.ModelName }}Controller struct{}
+
+// New{{ title $.ModelName }}Controller instantiates of the controller
+func New{{ title $.ModelName }}Controller() {{ title $.ModelName }}Controller {
+	return {{ title $.ModelName }}Controller{}
+}
+
+
 {{- range .Methods }}
     {{ if eq .Name "Create" }}
+        // Create{{ title $.ModelName }} to create a new {{ $.ModelName }}
+        func ({{ firstChar $.ModelName }}c {{ title $.ModelName }}Controller) Create{{ title $.ModelName }}(c *gin.Context) {
+            {{ $.ModelName }} := &models.{{ title $.ModelName }}{}
+
+            if err := c.BindJSON({{ $.ModelName }}); err != nil {
+                c.AbortWithError(http.StatusBadRequest, helpers.ErrorWithCode("invalid_input", "Failed to bind the body data", err))
+                return
+            }
+
+            if err := store.Create{{ title $.ModelName }}(c, {{ $.ModelName }}); err != nil {
+                c.Error(err)
+                c.Abort()
+                return
+            }
+
+            c.JSON(http.StatusCreated, {{ $.ModelName }})
+        }
     {{ else if eq .Name "Get" }}
+        // Get{{ title $.ModelName }} from id (in context)
+        func ({{ firstChar $.ModelName }}c {{ title $.ModelName }}Controller) Get{{ title $.ModelName }}(c *gin.Context) {
+            {{ $.ModelName }}, err := store.Find{{ title $.ModelName }}ById(c, c.Param("id"))
+
+            if err != nil {
+                c.AbortWithError(http.StatusNotFound, helpers.ErrorWithCode("{{ $.ModelName }}_not_found", "The {{ $.ModelName }} does not exist", err))
+                return
+            }
+
+            c.JSON(http.StatusOK, {{ $.ModelName }})
+        }
     {{ else if eq .Name "GetAll" }}
+        // GetAll{{ title $.ModelName }}s to get all {{ pluralize $.ModelName }}
+        func ({{ firstChar $.ModelName }}c {{ title $.ModelName }}Controller) GetAll{{ title $.ModelName }}s(c *gin.Context) {
+            {{ pluralize $.ModelName }}, err := store.GetAll{{ title $.ModelName }}s(c)
+            if err != nil {
+                c.Error(err)
+                c.Abort()
+                return
+            }
+
+            c.JSON(http.StatusOK, {{ pluralize $.ModelName }})
+        }
     {{ else if eq .Name "Update" }}
+        //Update{{ title $.ModelName }} updates the {{ $.ModelName }} entity
+        func ({{ firstChar $.ModelName }}c {{ title $.ModelName }}Controller) Update{{ title $.ModelName }}(c *gin.Context) {
+            new{{ title $.ModelName }} := models.{{ title $.ModelName }}{}
+
+            err := c.BindJSON(&new{{ title $.ModelName }})
+            if err != nil {
+                c.AbortWithError(http.StatusBadRequest, helpers.ErrorWithCode("invalid_input", "Failed to bind the body data", err))
+                return
+            }
+
+            _, err = store.Find{{ title $.ModelName }}ById(c, c.Param("id"))
+            if err != nil {
+                c.AbortWithError(http.StatusInternalServerError, helpers.ErrorWithCode("{{ $.ModelName }}_not_found", "Failed to find {{ $.ModelName }} id", err))
+                return
+            }
+
+            err = store.Update{{ title $.ModelName }}(c, c.Param("id"), params.M{"$set": new{{ title $.ModelName }}})
+            if err != nil {
+                c.Error(err)
+                c.Abort()
+                return
+            }
+
+            c.JSON(http.StatusOK, nil)
+        }
     {{ else if eq .Name "Delete" }}
+        // Delete{{ title $.ModelName }} to delete an existing {{ $.ModelName }}
+        func ({{ firstChar $.ModelName }}c {{ title $.ModelName }}Controller) Delete{{ title $.ModelName }}(c *gin.Context) {
+            err := store.Delete{{ title $.ModelName }}(c, c.Param("id"))
+
+            if err != nil {
+                c.Error(err)
+                c.Abort()
+                return
+            }
+
+            c.JSON(http.StatusOK, nil)
+        }
     {{ end }}
 {{- end }}

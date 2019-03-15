@@ -37,11 +37,10 @@ func generateControllerFile(filename string, selected []string) {
 
 	path := filepath.Join("templates", "controller.tmpl")
 	body, _ := ioutil.ReadFile(path)
-	tmpl, err := template.New("model").Funcs(funcMap).Parse(string(body))
-	utils.Check(err)
+	tmpl := template.Must(template.New("model").Option("missingkey=error").Funcs(funcMap).Parse(string(body)))
 
 	var buf bytes.Buffer
-	err = tmpl.Execute(&buf, selectedMethods)
+	err := tmpl.Execute(&buf, selectedMethods)
 	utils.Check(err)
 
 	src, _ := format.Source(buf.Bytes())
@@ -78,7 +77,7 @@ func ControllerCmd(cmd *cobra.Command, args []string) {
 	fileNames[choice] = strings.Title(inflector.Singularize(strings.TrimRight(fileNames[choice], ".go")))
 
 	//Step 2
-	methods := []string{"Create" + fileNames[choice], "Get" + fileNames[choice], "GetAll" + fileNames[choice] + "", "Update" + fileNames[choice], "Delete" + fileNames[choice]}
+	methods := []string{"Create" + fileNames[choice], "Get" + fileNames[choice], "GetAll" + fileNames[choice], "Update" + fileNames[choice], "Delete" + fileNames[choice]}
 	choices := shell.Checklist(methods,
 		"What method do you want to implement ? (space to select/deselect)",
 		nil)
