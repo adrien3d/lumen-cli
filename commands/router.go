@@ -1,42 +1,30 @@
 package commands
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/abiosoft/ishell"
-	"github.com/adrien3d/lumen/utils"
 	"github.com/gedex/inflector"
 	"github.com/spf13/cobra"
-	"go/format"
-	"gopkg.in/godo.v2/util"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"strings"
-	"text/template"
 )
 
-type SelectedModels struct {
-	ModelName string
-	Methods   []*Method
-}
-
-func generateRouterFile(filename string, selected []string) {
-	fmt.Println("Filename for controller:", filename)
-
-	methods := []*Method{}
-	selectedMethods := SelectedMethods{strings.ToLower(filename), methods}
-	for _, methodName := range selected {
-		methodName = methodName[0 : len(methodName)-len(filename)]
-		selectedMethods.Methods = append(selectedMethods.Methods, &Method{methodName})
+func generateRouterFile(selectedModels []*SelectedModel) {
+	for _, model := range selectedModels {
+		fmt.Print(model.ModelName, ": ")
+		for _, method := range model.Methods {
+			fmt.Print(method, "\t")
+		}
+		fmt.Println()
 	}
 
-	path := filepath.Join("templates", "router.tmpl")
+	/*path := filepath.Join("templates", "router.tmpl")
 	body, _ := ioutil.ReadFile(path)
 	tmpl := template.Must(template.New("model").Option("missingkey=error").Funcs(funcMap).Parse(string(body)))
 
 	var buf bytes.Buffer
-	err := tmpl.Execute(&buf, selectedMethods)
+	err := tmpl.Execute(&buf, selectedModels)
 	utils.Check(err)
 
 	src, _ := format.Source(buf.Bytes())
@@ -49,9 +37,8 @@ func generateRouterFile(filename string, selected []string) {
 	}
 	if err := ioutil.WriteFile(dstPath, src, 0644); err != nil {
 		fmt.Println(err)
-	}
+	}*/
 }
-
 
 func RouterCmd(cmd *cobra.Command, args []string) {
 	shell := ishell.New()
@@ -74,28 +61,23 @@ func RouterCmd(cmd *cobra.Command, args []string) {
 		nil)
 	fmt.Println(choices)
 
+	var selectedModels []*SelectedModel
 	for _, file := range choices {
+		var selectedModel SelectedModel
+		selectedModel.ModelName = fileNames[file]
 		//Step 2: Select methods to generate
 		methods := []string{"Create" + fileNames[file], "Get" + fileNames[file], "GetAll" + fileNames[file], "Update" + fileNames[file], "Delete" + fileNames[file]}
 		choices := shell.Checklist(methods,
 			"What method do you want to implement ? (space to select/deselect)",
 			nil)
-		var selectedMethods []string
 		for _, v := range choices {
-			selectedMethods = append(selectedMethods, methods[v])
+			selectedModel.Methods = append(selectedModel.Methods, methods[v])
 		}
-	}
-	//Step 2: Select routes to generate
-	/*methods := []string{"Create" + fileNames[choice], "Get" + fileNames[choice], "GetAll" + fileNames[choice], "Update" + fileNames[choice], "Delete" + fileNames[choice]}
-	choices := shell.Checklist(methods,
-		"What method do you want to implement ? (space to select/deselect)",
-		nil)
-	var selectedMethods []string
-	for _, v := range choices {
-		selectedMethods = append(selectedMethods, methods[v])
+		selectedModels = append(selectedModels, &selectedModel)
 	}
 
-	generateRouterFile(fileNames[choice], selectedMethods)*/
+	generateRouterFile(selectedModels)
+
 	os.Exit(1)
 
 	shell.Run()

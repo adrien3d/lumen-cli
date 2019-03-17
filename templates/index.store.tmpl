@@ -1,0 +1,16 @@
+package store
+
+import (
+	"github.com/adrien3d/base-api/helpers/params"
+	"github.com/adrien3d/base-api/models"
+)
+
+// Store interface
+type Store interface {
+	CreateUser(*models.User) error
+	DeleteUser(*models.User, string) error
+	FindUserById(string) (*models.User, error)
+	FindUser(params.M) (*models.User, error)
+	UpdateUser(string, params.M) error
+	GetAllUser() ([]*models.User, error)
+}

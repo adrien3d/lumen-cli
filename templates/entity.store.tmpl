@@ -1,0 +1,38 @@
+package store
+
+import (
+	"context"
+
+	"github.com/adrien3d/base-api/helpers/params"
+	"github.com/adrien3d/base-api/models"
+)
+
+// CreateUser checks if user already exists, and if not, creates it
+func CreateUser(c context.Context, record *models.User) error {
+	return FromContext(c).CreateUser(record)
+}
+
+// FindUserById allows to retrieve a user by its id
+func FindUserById(c context.Context, id string) (*models.User, error) {
+	return FromContext(c).FindUserById(id)
+}
+
+// FindUser allows to retrieve a user by its characteristics
+func FindUser(c context.Context, params params.M) (*models.User, error) {
+	return FromContext(c).FindUser(params)
+}
+
+// DeleteUser allows to delete a user by its id
+func DeleteUser(c context.Context, userId string) error {
+	return FromContext(c).DeleteUser(Current(c), userId)
+}
+
+// UpdateUser allows to update one or more user characteristics
+func UpdateUser(c context.Context, userId string, params params.M) error {
+	return FromContext(c).UpdateUser(userId, params)
+}
+
+// GetAllUser allows to get all users
+func GetAllUser(c context.Context) ([]*models.User, error) {
+	return FromContext(c).GetAllUser()
+}

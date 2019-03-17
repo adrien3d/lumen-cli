@@ -16,23 +16,19 @@ import (
 	"text/template"
 )
 
-type SelectedMethods struct {
+type SelectedModel struct {
 	ModelName string
-	Methods   []*Method
-}
-
-type Method struct {
-	Name string
+	Methods   []string
 }
 
 func generateControllerFile(filename string, selected []string) {
 	fmt.Println("Filename for controller:", filename)
 
-	methods := []*Method{}
-	selectedMethods := SelectedMethods{strings.ToLower(filename), methods}
+	var methods []string
+	selectedModel := SelectedModel{strings.ToLower(filename), methods}
 	for _, methodName := range selected {
 		methodName = methodName[0 : len(methodName)-len(filename)]
-		selectedMethods.Methods = append(selectedMethods.Methods, &Method{methodName})
+		selectedModel.Methods = append(selectedModel.Methods, methodName)
 	}
 
 	path := filepath.Join("templates", "controller.tmpl")
@@ -40,7 +36,7 @@ func generateControllerFile(filename string, selected []string) {
 	tmpl := template.Must(template.New("model").Option("missingkey=error").Funcs(funcMap).Parse(string(body)))
 
 	var buf bytes.Buffer
-	err := tmpl.Execute(&buf, selectedMethods)
+	err := tmpl.Execute(&buf, selectedModel)
 	utils.Check(err)
 
 	src, _ := format.Source(buf.Bytes())

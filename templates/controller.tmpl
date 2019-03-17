@@ -20,7 +20,7 @@ func New{{ title $.ModelName }}Controller() {{ title $.ModelName }}Controller {
 
 
 {{- range .Methods }}
-    {{ if eq .Name "Create" }}
+    {{ if eq . "Create" }}
         // Create{{ title $.ModelName }} to create a new {{ $.ModelName }}
         func ({{ firstChar $.ModelName }}c {{ title $.ModelName }}Controller) Create{{ title $.ModelName }}(c *gin.Context) {
             {{ $.ModelName }} := &models.{{ title $.ModelName }}{}
@@ -38,7 +38,7 @@ func New{{ title $.ModelName }}Controller() {{ title $.ModelName }}Controller {
 
             c.JSON(http.StatusCreated, {{ $.ModelName }})
         }
-    {{ else if eq .Name "Get" }}
+    {{ else if eq . "Get" }}
         // Get{{ title $.ModelName }} from id (in context)
         func ({{ firstChar $.ModelName }}c {{ title $.ModelName }}Controller) Get{{ title $.ModelName }}(c *gin.Context) {
             {{ $.ModelName }}, err := store.Find{{ title $.ModelName }}ById(c, c.Param("id"))
@@ -50,7 +50,7 @@ func New{{ title $.ModelName }}Controller() {{ title $.ModelName }}Controller {
 
             c.JSON(http.StatusOK, {{ $.ModelName }})
         }
-    {{ else if eq .Name "GetAll" }}
+    {{ else if eq . "GetAll" }}
         // GetAll{{ title $.ModelName }}s to get all {{ pluralize $.ModelName }}
         func ({{ firstChar $.ModelName }}c {{ title $.ModelName }}Controller) GetAll{{ title $.ModelName }}s(c *gin.Context) {
             {{ pluralize $.ModelName }}, err := store.GetAll{{ title $.ModelName }}s(c)
@@ -62,7 +62,7 @@ func New{{ title $.ModelName }}Controller() {{ title $.ModelName }}Controller {
 
             c.JSON(http.StatusOK, {{ pluralize $.ModelName }})
         }
-    {{ else if eq .Name "Update" }}
+    {{ else if eq . "Update" }}
         //Update{{ title $.ModelName }} updates the {{ $.ModelName }} entity
         func ({{ firstChar $.ModelName }}c {{ title $.ModelName }}Controller) Update{{ title $.ModelName }}(c *gin.Context) {
             new{{ title $.ModelName }} := models.{{ title $.ModelName }}{}
@@ -88,7 +88,7 @@ func New{{ title $.ModelName }}Controller() {{ title $.ModelName }}Controller {
 
             c.JSON(http.StatusOK, nil)
         }
-    {{ else if eq .Name "Delete" }}
+    {{ else if eq . "Delete" }}
         // Delete{{ title $.ModelName }} to delete an existing {{ $.ModelName }}
         func ({{ firstChar $.ModelName }}c {{ title $.ModelName }}Controller) Delete{{ title $.ModelName }}(c *gin.Context) {
             err := store.Delete{{ title $.ModelName }}(c, c.Param("id"))

@@ -63,7 +63,7 @@ func generateModelFile(model Model) {
 }
 
 func ModelCmd(cmd *cobra.Command, args []string) {
-	fields := []*Field{}
+	var fields []*Field
 	model := Model{"", fields}
 
 	//fmt.Println("Generating Model: " + strings.Join(args, " "))
