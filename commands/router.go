@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func generateRouterFile(selectedModels []*SelectedModel) {
+func generateRouterFile(selectedModels []SelectedModel) {
 	for _, model := range selectedModels {
 		fmt.Print(model.ModelName, ": ")
 		for _, method := range model.Methods {
@@ -61,7 +61,7 @@ func RouterCmd(cmd *cobra.Command, args []string) {
 		nil)
 	fmt.Println(choices)
 
-	var selectedModels []*SelectedModel
+	var selectedModels []SelectedModel
 	for _, file := range choices {
 		var selectedModel SelectedModel
 		selectedModel.ModelName = fileNames[file]
@@ -71,9 +71,11 @@ func RouterCmd(cmd *cobra.Command, args []string) {
 			"What method do you want to implement ? (space to select/deselect)",
 			nil)
 		for _, v := range choices {
-			selectedModel.Methods = append(selectedModel.Methods, methods[v])
+			meth := methods[v]
+			meth = meth[0 : len(meth)-len(fileNames[file])]
+			selectedModel.Methods = append(selectedModel.Methods, meth)
 		}
-		selectedModels = append(selectedModels, &selectedModel)
+		selectedModels = append(selectedModels, selectedModel)
 	}
 
 	generateRouterFile(selectedModels)

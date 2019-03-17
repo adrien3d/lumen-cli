@@ -30,13 +30,12 @@ type Field struct {
 }
 
 var funcMap = template.FuncMap{
-	"pluralize":        inflector.Pluralize,
-	"title":            strings.Title,
-	"toLower":          strings.ToLower,
-	"toLowerCamelCase": utils.CamelToLowerCamel,
-	"toOriginalCase":   utils.CamelToOriginal,
-	"toSnakeCase":      snaker.CamelToSnake,
-	"firstChar":        utils.GetFirstChar,
+	"pluralize":   inflector.Pluralize,
+	"title":       strings.Title,
+	"firstLower":  utils.FirstCharLower,
+	"toLower":     strings.ToLower,
+	"toSnakeCase": snaker.CamelToSnake,
+	"firstChar":   utils.GetFirstChar,
 }
 
 func generateModelFile(model Model) {

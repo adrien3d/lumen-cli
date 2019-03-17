@@ -13,4 +13,9 @@ type Store interface {
 	FindUser(params.M) (*models.User, error)
 	UpdateUser(string, params.M) error
 	GetAllUser() ([]*models.User, error)
+
+
+	{{- range . }}
+	    {{ . }}
+	{{- end }}
 }

@@ -21,26 +21,17 @@ type SelectedModel struct {
 	Methods   []string
 }
 
-func generateControllerFile(filename string, selected []string) {
-	fmt.Println("Filename for controller:", filename)
-
-	var methods []string
-	selectedModel := SelectedModel{strings.ToLower(filename), methods}
-	for _, methodName := range selected {
-		methodName = methodName[0 : len(methodName)-len(filename)]
-		selectedModel.Methods = append(selectedModel.Methods, methodName)
-	}
-
+func generateControllerFile(data SelectedModel) {
 	path := filepath.Join("templates", "controller.tmpl")
 	body, _ := ioutil.ReadFile(path)
 	tmpl := template.Must(template.New("model").Option("missingkey=error").Funcs(funcMap).Parse(string(body)))
 
 	var buf bytes.Buffer
-	err := tmpl.Execute(&buf, selectedModel)
+	err := tmpl.Execute(&buf, data)
 	utils.Check(err)
 
 	src, _ := format.Source(buf.Bytes())
-	dstPath := filepath.Join("generated/controllers/", strings.ToLower(filename)+".go")
+	dstPath := filepath.Join("generated/controllers/", strings.ToLower(data.ModelName)+".go")
 
 	if !util.FileExists(filepath.Dir(dstPath)) {
 		if err := os.Mkdir(filepath.Dir(dstPath), 0644); err != nil {
@@ -78,10 +69,12 @@ func ControllerCmd(cmd *cobra.Command, args []string) {
 		nil)
 	var selectedMethods []string
 	for _, v := range choices {
-		selectedMethods = append(selectedMethods, methods[v])
+		meth := methods[v]
+		meth = meth[0 : len(meth)-len(fileNames[choice])]
+		selectedMethods = append(selectedMethods, meth)
 	}
 
-	generateControllerFile(fileNames[choice], selectedMethods)
+	generateControllerFile(SelectedModel{fileNames[choice], selectedMethods})
 	os.Exit(1)
 
 	shell.Run()

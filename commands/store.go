@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func generateStoreFile(selectedModels []*SelectedModel) {
+func generateStoreFile(selectedModels []SelectedModel) {
 	for _, model := range selectedModels {
 		fmt.Print(model.ModelName, ": ")
 		for _, method := range model.Methods {
@@ -18,6 +18,26 @@ func generateStoreFile(selectedModels []*SelectedModel) {
 		}
 		fmt.Println()
 	}
+
+	/*path := filepath.Join("templates", "store.tmpl")
+	body, _ := ioutil.ReadFile(path)
+	tmpl := template.Must(template.New("model").Option("missingkey=error").Funcs(funcMap).Parse(string(body)))
+
+	var buf bytes.Buffer
+	err := tmpl.Execute(&buf, selectedModel)
+	utils.Check(err)
+
+	src, _ := format.Source(buf.Bytes())
+	dstPath := filepath.Join("generated/controllers/", strings.ToLower(filename)+".go")
+
+	if !util.FileExists(filepath.Dir(dstPath)) {
+		if err := os.Mkdir(filepath.Dir(dstPath), 0644); err != nil {
+			fmt.Println(err)
+		}
+	}
+	if err := ioutil.WriteFile(dstPath, src, 0644); err != nil {
+		fmt.Println(err)
+	}*/
 }
 
 func StoreCmd(cmd *cobra.Command, args []string) {
@@ -41,7 +61,7 @@ func StoreCmd(cmd *cobra.Command, args []string) {
 		nil)
 	fmt.Println(choices)
 
-	var selectedModels []*SelectedModel
+	var selectedModels []SelectedModel
 	for _, file := range choices {
 		var selectedModel SelectedModel
 		selectedModel.ModelName = fileNames[file]
@@ -51,11 +71,12 @@ func StoreCmd(cmd *cobra.Command, args []string) {
 			"What method do you want to implement ? (space to select/deselect)",
 			nil)
 		for _, v := range choices {
-			selectedModel.Methods = append(selectedModel.Methods, methods[v])
+			meth := methods[v]
+			meth = meth[0 : len(meth)-len(fileNames[file])]
+			selectedModel.Methods = append(selectedModel.Methods, meth)
 		}
-		selectedModels = append(selectedModels, &selectedModel)
+		selectedModels = append(selectedModels, selectedModel)
 	}
-	fmt.Println(selectedModels)
 
 	generateStoreFile(selectedModels)
 
