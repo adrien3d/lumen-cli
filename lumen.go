@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/adrien3d/lumen/commands"
+	"github.com/adrien3d/lumen/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -14,12 +15,12 @@ func main() {
 		Run:   commands.ModelCmd,
 	}
 
-	var cmdStore = &cobra.Command{
-		Use:   "store [name]",
-		Short: `Generating store`,
-		Long:  `Generates store methods`,
+	var cmdGenerate = &cobra.Command{
+		Use:   "generate [name]",
+		Short: `Generating everything`,
+		Long:  `Generating everything from models and methods`,
 		Args:  cobra.MinimumNArgs(0),
-		Run:   commands.StoreCmd,
+		Run:   commands.GenerateCmd,
 	}
 
 	var cmdController = &cobra.Command{
@@ -38,9 +39,19 @@ func main() {
 		Run:   commands.RouterCmd,
 	}
 
+	var cmdStore = &cobra.Command{
+		Use:   "store [name]",
+		Short: `Generating store`,
+		Long:  `Generates store methods`,
+		Args:  cobra.MinimumNArgs(0),
+		Run:   commands.StoreCmd,
+	}
+
 	var rootCmd = &cobra.Command{
 		Use:   "lumen",
 		Short: "Lumen is a CLI that helps you generating API code for base-api"}
-	rootCmd.AddCommand(cmdController, cmdModel, cmdRouter, cmdStore)
-	rootCmd.Execute()
+	rootCmd.AddCommand(cmdModel, cmdGenerate, cmdController, cmdRouter, cmdStore)
+
+	err := rootCmd.Execute()
+	utils.Check(err)
 }
