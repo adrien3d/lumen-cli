@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// GenerateCmd holds functions to generate controllers, router, store
 func GenerateCmd(cmd *cobra.Command, args []string) {
 	selectedModels := utils.SelectMethodsModels("everything")
 
@@ -17,7 +18,6 @@ func GenerateCmd(cmd *cobra.Command, args []string) {
 
 	// Step 2: Generating router
 	utils.GenerateFile("router.tmpl", "generated/server/router.go", selectedModels)
-
 
 	// Step 3.1: Generate store.go that indexes methods
 	utils.GenerateFile("index.store.tmpl", "generated/store/store.go", selectedModels)

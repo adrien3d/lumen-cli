@@ -15,12 +15,15 @@ import (
 	"text/template"
 )
 
+// Check checks errors
 func Check(e error) {
 	if e != nil {
 		fmt.Println(e)
 		panic(e)
 	}
 }
+
+// FirstCharLower lowers first char of string
 func FirstCharLower(s string) string {
 	ss := strings.Split(s, "")
 	ss[0] = strings.ToLower(ss[0])
@@ -28,10 +31,12 @@ func FirstCharLower(s string) string {
 	return strings.Join(ss, "")
 }
 
+// GetFirstChar returns the first char of string
 func GetFirstChar(s string) string {
 	return s[0:1]
 }
 
+// FuncMap is a set of functions to use in templates
 var FuncMap = template.FuncMap{
 	"pluralize":   inflector.Pluralize,
 	"singularize": inflector.Singularize,
@@ -42,11 +47,13 @@ var FuncMap = template.FuncMap{
 	"firstChar":   GetFirstChar,
 }
 
+// SelectedModel is a structure that holds model name and selected methods
 type SelectedModel struct {
 	ModelName string
 	Methods   []string
 }
 
+// SelectMethodsModels asks user which models and methods to generate
 func SelectMethodsModels(typeName string) (selectedModels []SelectedModel) {
 	shell := ishell.New()
 
@@ -87,6 +94,7 @@ func SelectMethodsModels(typeName string) (selectedModels []SelectedModel) {
 	return selectedModels
 }
 
+// GenerateFile produces a file from template and data (data structure)
 func GenerateFile(templateFile string, outputPath string, data interface{}) {
 	path := filepath.Join("templates", templateFile)
 	body, _ := ioutil.ReadFile(path)

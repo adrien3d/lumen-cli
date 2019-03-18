@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// RouterCmd holds functions to generate router
 func RouterCmd(cmd *cobra.Command, args []string) {
 	selectedModels := utils.SelectMethodsModels("router")
 

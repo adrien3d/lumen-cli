@@ -8,11 +8,13 @@ import (
 	"os"
 )
 
+// Model is a structure that holds characteristics of model
 type Model struct {
 	Name   string
 	Fields []*Field
 }
 
+// Field is a structure that holds characteristics of field
 type Field struct {
 	Name     string
 	Type     string
@@ -20,6 +22,7 @@ type Field struct {
 	Required bool
 }
 
+// ModelCmd holds functions to generate model
 func ModelCmd(cmd *cobra.Command, args []string) {
 	var fields []*Field
 	model := Model{"", fields}

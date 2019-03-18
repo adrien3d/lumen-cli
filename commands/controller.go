@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// ControllerCmd holds functions to generate controller
 func ControllerCmd(cmd *cobra.Command, args []string) {
 	selectedModels := utils.SelectMethodsModels("controller")
 
