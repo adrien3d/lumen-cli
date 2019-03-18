@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"fmt"
+	"github.com/abiosoft/ishell"
 	"github.com/gedex/inflector"
 	"github.com/serenize/snaker"
 	"go/format"
@@ -39,6 +40,51 @@ var FuncMap = template.FuncMap{
 	"toLower":     strings.ToLower,
 	"toSnakeCase": snaker.CamelToSnake,
 	"firstChar":   GetFirstChar,
+}
+
+type SelectedModel struct {
+	ModelName string
+	Methods   []string
+}
+
+func SelectMethodsModels(typeName string) (selectedModels []SelectedModel) {
+	shell := ishell.New()
+
+	shell.Println("Generating " + typeName)
+
+	files, err := ioutil.ReadDir("generated/models")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var fileNames []string
+	for _, file := range files {
+		fileNames = append(fileNames, strings.Title(inflector.Singularize(strings.TrimRight(file.Name(), ".go"))))
+	}
+
+	// Step 1: Ask user which models to use
+	choices := shell.Checklist(fileNames,
+		"Please select models you want to generate the matching store:",
+		nil)
+	fmt.Println(choices)
+
+	for _, file := range choices {
+		var selectedModel SelectedModel
+		selectedModel.ModelName = fileNames[file]
+		//Step 2: Select methods to generate
+		methods := []string{"Create" + fileNames[file], "Get" + fileNames[file], "GetAll" + fileNames[file], "Update" + fileNames[file], "Delete" + fileNames[file]}
+		choices := shell.Checklist(methods,
+			"What method do you want to implement ? (space to select/deselect)",
+			nil)
+		for _, v := range choices {
+			meth := methods[v]
+			meth = meth[0 : len(meth)-len(fileNames[file])]
+			selectedModel.Methods = append(selectedModel.Methods, meth)
+		}
+		selectedModels = append(selectedModels, selectedModel)
+	}
+
+	return selectedModels
 }
 
 func GenerateFile(templateFile string, outputPath string, data interface{}) {

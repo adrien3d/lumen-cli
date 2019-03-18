@@ -9,99 +9,84 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
-// CreateUser checks if user already exists, and if not, creates it
-func (db *mongo) CreateUser(user *models.User) error {
-	session := db.Session.Copy()
-	defer session.Close()
-	users := db.C(models.UsersCollection).With(session)
+{{ $sing := singularize .ModelName }}
+{{- range .Methods  }}
+    {{- if eq . "Create" }}
+        // Create{{ title $sing }} checks if {{ firstLower $sing }}  already exists, and if not, creates it
+        func (db *mongo) Create{{ title $sing }}({{ firstLower $sing }} *models.{{ title $sing }}) error {
+            session := db.Session.Copy()
+            defer session.Close()
+            {{ firstLower $sing }}s := db.C(models.{{ title $sing }}sCollection).With(session)
 
-	user.Id = bson.NewObjectId().Hex()
-	err := user.BeforeCreate()
-	if err != nil {
-		return err
-	}
+            {{ firstLower $sing }}.Id = bson.NewObjectId().Hex()
+            err := {{ firstLower $sing }}.BeforeCreate()
+            if err != nil {
+                return err
+            }
 
-	if count, _ := users.Find(bson.M{"email": user.Email}).Count(); count > 0 {
-		return helpers.NewError(http.StatusConflict, "user_already_exists", "User already exists", err)
-	}
+            err = {{ firstLower $sing }}s.Insert({{ firstLower $sing }})
+            if err != nil {
+                return helpers.NewError(http.StatusInternalServerError, "{{ firstLower $sing }}_creation_failed", "Failed to insert the {{ firstLower $sing }} in the database", err)
+            }
 
-	err = users.Insert(user)
-	if err != nil {
-		return helpers.NewError(http.StatusInternalServerError, "user_creation_failed", "Failed to insert the user in the database", err)
-	}
+            return nil
+        }
+    {{- else if eq . "Get" }}
+        // Find{{ title $sing }}ById allows to retrieve a {{ firstLower $sing }} by its id
+        func (db *mongo) Find{{ title $sing }}ById(id string) (*models.{{ title $sing }}, error) {
+            session := db.Session.Copy()
+            defer session.Close()
+            {{ firstLower $sing }}s := db.C(models.{{ title $sing }}sCollection).With(session)
 
-	return nil
-}
+            {{ firstLower $sing }} := &models.{{ title $sing }}{}
+            err := {{ firstLower $sing }}s.FindId(id).One({{ firstLower $sing }})
+            if err != nil {
+                return nil, helpers.NewError(http.StatusNotFound, "{{ firstLower $sing }}_not_found", "{{ title $sing }} not found", err)
+            }
 
-// FindUserById allows to retrieve a user by its id
-func (db *mongo) FindUserById(id string) (*models.User, error) {
-	session := db.Session.Copy()
-	defer session.Close()
-	users := db.C(models.UsersCollection).With(session)
+            return {{ firstLower $sing }}, err
+        }
+    {{- else if eq . "GetAll" }}
+        // GetAll{{ title $sing }} allows to get all {{ firstLower $sing }}s
+        func (db *mongo) GetAll{{ title $sing }}() ([]*models.{{ title $sing }}, error) {
+            session := db.Session.Copy()
+            defer session.Close()
 
-	user := &models.User{}
-	err := users.FindId(id).One(user)
-	if err != nil {
-		return nil, helpers.NewError(http.StatusNotFound, "user_not_found", "User not found", err)
-	}
+            {{ firstLower $sing }}s := db.C(models.{{ title $sing }}sCollection).With(session)
 
-	return user, err
-}
+            list := []*models.{{ title $sing }}{}
+            if err := {{ firstLower $sing }}s.Find(params.M{}).All(&list); err != nil {
+                return nil, helpers.NewError(http.StatusNotFound, "{{ firstLower $sing }}s_not_found", "{{ title $sing }} not found", err)
+            }
 
-// FindUser allows to retrieve a user by its characteristics
-func (db *mongo) FindUser(params params.M) (*models.User, error) {
-	session := db.Session.Copy()
-	defer session.Close()
-	users := db.C(models.UsersCollection).With(session)
+            return list, nil
+        }
+    {{- else if eq . "Update" }}
+        // Update{{ title $sing }} allows to update one or more {{ firstLower $sing }} characteristics
+        func (db *mongo) Update{{ title $sing }}({{ firstLower $sing }}Id string, params params.M) error {
+            session := db.Session.Copy()
+            defer session.Close()
+            {{ firstLower $sing }}s := db.C(models.{{ title $sing }}sCollection).With(session)
 
-	user := &models.User{}
+            if err := {{ firstLower $sing }}s.UpdateId({{ firstLower $sing }}Id, params); err != nil {
+                return helpers.NewError(http.StatusInternalServerError, "{{ firstLower $sing }}_update_failed", "Failed to update the {{ firstLower $sing }}", err)
+            }
 
-	err := users.Find(params).One(user)
-	if err != nil {
-		return nil, helpers.NewError(http.StatusNotFound, "user_not_found", "User not found", err)
-	}
+            return nil
+        }
+    {{- else if eq . "Delete" }}
+        // Delete{{ title $sing }} allows to delete a {{ firstLower $sing }} by its id
+        func (db *mongo) Delete{{ title $sing }}({{ firstLower $sing }} *models.{{ title $sing }}, {{ firstLower $sing }}Id string) error {
+            session := db.Session.Copy()
+            defer session.Close()
+            {{ firstLower $sing }}s := db.C(models.{{ title $sing }}sCollection).With(session)
 
-	return user, err
-}
+            err := {{ firstLower $sing }}s.Remove(bson.M{"_id": {{ firstLower $sing }}Id})
+            if err != nil {
+                return helpers.NewError(http.StatusInternalServerError, "{{ firstLower $sing }}_delete_failed", "Failed to delete the {{ firstLower $sing }}", err)
+            }
 
-// DeleteUser allows to delete a user by its id
-func (db *mongo) DeleteUser(user *models.User, userId string) error {
-	session := db.Session.Copy()
-	defer session.Close()
-	users := db.C(models.UsersCollection).With(session)
-
-	err := users.Remove(bson.M{"_id": userId})
-	if err != nil {
-		return helpers.NewError(http.StatusInternalServerError, "user_delete_failed", "Failed to delete the user", err)
-	}
-
-	return nil
-}
-
-// UpdateUser allows to update one or more user characteristics
-func (db *mongo) UpdateUser(userId string, params params.M) error {
-	session := db.Session.Copy()
-	defer session.Close()
-	users := db.C(models.UsersCollection).With(session)
-
-	if err := users.UpdateId(userId, params); err != nil {
-		return helpers.NewError(http.StatusInternalServerError, "user_update_failed", "Failed to update the user", err)
-	}
-
-	return nil
-}
-
-// GetAllUser allows to get all users
-func (db *mongo) GetAllUser() ([]*models.User, error) {
-	session := db.Session.Copy()
-	defer session.Close()
-
-	users := db.C(models.UsersCollection).With(session)
-
-	list := []*models.User{}
-	if err := users.Find(params.M{}).All(&list); err != nil {
-		return nil, helpers.NewError(http.StatusNotFound, "users_not_found", "Users not found", err)
-	}
-
-	return list, nil
-}
+            return nil
+        }
+    {{- end }}
+{{- end }}

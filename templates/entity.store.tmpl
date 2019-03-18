@@ -7,27 +7,32 @@ import (
 	"github.com/adrien3d/base-api/models"
 )
 
-// CreateUser checks if user already exists, and if not, creates it
-func CreateUser(c context.Context, record *models.User) error {
-	return FromContext(c).CreateUser(record)
-}
-
-// FindUserById allows to retrieve a user by its id
-func FindUserById(c context.Context, id string) (*models.User, error) {
-	return FromContext(c).FindUserById(id)
-}
-
-// DeleteUser allows to delete a user by its id
-func DeleteUser(c context.Context, userId string) error {
-	return FromContext(c).DeleteUser(Current(c), userId)
-}
-
-// UpdateUser allows to update one or more user characteristics
-func UpdateUser(c context.Context, userId string, params params.M) error {
-	return FromContext(c).UpdateUser(userId, params)
-}
-
-// GetAllUser allows to get all users
-func GetAllUser(c context.Context) ([]*models.User, error) {
-	return FromContext(c).GetAllUser()
-}
+{{ $sing := singularize .ModelName }}
+{{- range .Methods  }}
+    {{- if eq . "Create" }}
+        //Create{{ title $sing }} checks if {{ firstLower $sing }} already exists, and if not, creates it
+        func Create{{ title $sing }}(c context.Context, record *models.{{ title $sing }}) error {
+            return FromContext(c).CreateU{{ title $sing }}(record)
+        }
+    {{- else if eq . "Get" }}
+        // Find{{ title $sing }}ById allows to retrieve a {{ firstLower $sing }} by its id
+        func Find{{ title $sing }}ById(c context.Context, id string) (*models.{{ title $sing }}, error) {
+            return FromContext(c).Find{{ title $sing }}ById(id)
+        }
+    {{- else if eq . "GetAll" }}
+        // GetAll{{ title $sing }} allows to get all {{ firstLower $sing }}s
+        func GetAll{{ title $sing }}(c context.Context) ([]*models.{{ title $sing }}, error) {
+            return FromContext(c).GetAll{{ title $sing }}()
+        }
+    {{- else if eq . "Update" }}
+        // Update{{ title $sing }} allows to update one or more {{ firstLower $sing }} characteristics
+        func Update{{ title $sing }}(c context.Context, {{ firstLower $sing }}Id string, params params.M) error {
+            return FromContext(c).Update{{ title $sing }}({{ firstLower $sing }}Id, params)
+        }
+    {{- else if eq . "Delete" }}
+        // Delete{{ title $sing }} allows to delete a {{ firstLower $sing }} by its id
+        func Delete{{ title $sing }}(c context.Context, {{ firstLower $sing }}Id string) error {
+            return FromContext(c).Delete{{ title $sing }}(Current(c), {{ firstLower $sing }}Id)
+        }
+    {{- end }}
+{{- end }}

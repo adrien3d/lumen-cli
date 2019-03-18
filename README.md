@@ -15,9 +15,14 @@ Define `export PATH=$PATH:$GOPATH/bin`
 
 `go install`
 
-## Getting Started
+## Usage
 
 * Generate a first model with `lumen model`
+
+### Auto mode
+* Select entities for each selected model and generate controller, store and router with `lumen generate`
+
+### Manual mode
 * Then, generate the corresponding controller with `lumen controller`
 * Then, generate the corresponding store with `lumen store`
 * Finally, generate the router with `lumen router`
