@@ -1,20 +1,11 @@
 package commands
 
 import (
-	"bytes"
-	"fmt"
 	"github.com/abiosoft/ishell"
 	"github.com/adrien3d/lumen/utils"
-	"github.com/gedex/inflector"
 	"github.com/serenize/snaker"
 	"github.com/spf13/cobra"
-	"go/format"
-	"gopkg.in/godo.v2/util"
-	"io/ioutil"
 	"os"
-	"path/filepath"
-	"strings"
-	"text/template"
 )
 
 type Model struct {
@@ -27,39 +18,6 @@ type Field struct {
 	Type     string
 	IsId     bool
 	Required bool
-}
-
-var funcMap = template.FuncMap{
-	"pluralize":   inflector.Pluralize,
-	"singularize": inflector.Singularize,
-	"title":       strings.Title,
-	"firstLower":  utils.FirstCharLower,
-	"toLower":     strings.ToLower,
-	"toSnakeCase": snaker.CamelToSnake,
-	"firstChar":   utils.GetFirstChar,
-}
-
-func generateModelFile(model Model) {
-	path := filepath.Join("templates", "model.tmpl")
-	body, _ := ioutil.ReadFile(path)
-	tmpl, _ := template.New("model").Funcs(funcMap).Parse(string(body))
-
-	var buf bytes.Buffer
-	err := tmpl.Execute(&buf, model)
-	utils.Check(err)
-
-	src, _ := format.Source(buf.Bytes())
-	dstPath := filepath.Join("generated/models/", snaker.CamelToSnake(model.Name)+".go")
-
-	if !util.FileExists(filepath.Dir(dstPath)) {
-		if err := os.Mkdir(filepath.Dir(dstPath), 0644); err != nil {
-			fmt.Println(err)
-		}
-	}
-
-	if err := ioutil.WriteFile(dstPath, src, 0644); err != nil {
-		fmt.Println(err)
-	}
 }
 
 func ModelCmd(cmd *cobra.Command, args []string) {
@@ -114,14 +72,14 @@ func ModelCmd(cmd *cobra.Command, args []string) {
 		}
 		shell.Println(field.Type)
 
-		// Step 3: choosing if property is the ID one
-		if shell.MultiChoice([]string{"yes", "no"}, "Is "+field.Name+" the ID property?") == 0 {
-			field.IsId = true
-		}
-
-		// Step 4: choosing if property is required
+		// Step 3: choosing if property is required
 		if shell.MultiChoice([]string{"yes", "no"}, "Is "+field.Name+" required?") == 0 {
 			field.Required = true
+		}
+
+		// Step 4: choosing if property is the ID one
+		if shell.MultiChoice([]string{"yes", "no"}, "Is "+field.Name+" the ID property?") == 0 {
+			field.IsId = true
 		}
 
 		model.Fields = append(model.Fields, &field)
@@ -129,7 +87,7 @@ func ModelCmd(cmd *cobra.Command, args []string) {
 		propertyNum += 1
 
 		if shell.MultiChoice([]string{"yes", "no"}, "Do you want to add a new property?") == 1 {
-			generateModelFile(model)
+			utils.GenerateFile("model.tmpl", "generated/models/"+snaker.CamelToSnake(model.Name)+".go", model)
 			os.Exit(1)
 		}
 	}

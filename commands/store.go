@@ -3,42 +3,13 @@ package commands
 import (
 	"fmt"
 	"github.com/abiosoft/ishell"
+	"github.com/adrien3d/lumen/utils"
 	"github.com/gedex/inflector"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"os"
 	"strings"
 )
-
-func generateStoreFile(selectedModels []SelectedModel) {
-	for _, model := range selectedModels {
-		fmt.Print(model.ModelName, ": ")
-		for _, method := range model.Methods {
-			fmt.Print(method, "\t")
-		}
-		fmt.Println()
-	}
-
-	/*path := filepath.Join("templates", "store.tmpl")
-	body, _ := ioutil.ReadFile(path)
-	tmpl := template.Must(template.New("model").Option("missingkey=error").Funcs(funcMap).Parse(string(body)))
-
-	var buf bytes.Buffer
-	err := tmpl.Execute(&buf, selectedModel)
-	utils.Check(err)
-
-	src, _ := format.Source(buf.Bytes())
-	dstPath := filepath.Join("generated/controllers/", strings.ToLower(filename)+".go")
-
-	if !util.FileExists(filepath.Dir(dstPath)) {
-		if err := os.Mkdir(filepath.Dir(dstPath), 0644); err != nil {
-			fmt.Println(err)
-		}
-	}
-	if err := ioutil.WriteFile(dstPath, src, 0644); err != nil {
-		fmt.Println(err)
-	}*/
-}
 
 func StoreCmd(cmd *cobra.Command, args []string) {
 	shell := ishell.New()
@@ -78,7 +49,10 @@ func StoreCmd(cmd *cobra.Command, args []string) {
 		selectedModels = append(selectedModels, selectedModel)
 	}
 
-	generateStoreFile(selectedModels)
+	// Step 1: Generate store.go that indexes methods
+	utils.GenerateFile("index.store.tmpl", "generated/store/store.go", selectedModels)
+
+	// Step 2: Generate interfaces in entity.go
 
 	os.Exit(1)
 

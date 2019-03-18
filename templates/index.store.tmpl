@@ -7,15 +7,20 @@ import (
 
 // Store interface
 type Store interface {
-	CreateUser(*models.User) error
-	DeleteUser(*models.User, string) error
-	FindUserById(string) (*models.User, error)
-	FindUser(params.M) (*models.User, error)
-	UpdateUser(string, params.M) error
-	GetAllUser() ([]*models.User, error)
-
-
-	{{- range . }}
-	    {{ . }}
-	{{- end }}
+    {{- range . }}
+        {{ $sing := singularize .ModelName }}
+            {{- range .Methods  }}
+                {{- if eq . "Create" }}
+                    Create{{ title $sing }}(*models.{{ title $sing }}) error
+                {{- else if eq . "Get" }}
+                    Find{{ title $sing }}ById(string)(*models.{{ title $sing }}, error)
+                {{- else if eq . "GetAll" }}
+                    GetAll{{ title $sing }}()([]*models.{{ title $sing }}, error)
+                {{- else if eq . "Update" }}
+                    Update{{ title $sing }}(string, params.M) error
+                {{- else if eq . "Delete" }}
+                    Delete{{ title $sing }}(*models.{{ title $sing }}, string) error
+                {{- end }}
+            {{- end }}
+    {{- end }}
 }

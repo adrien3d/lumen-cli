@@ -17,11 +17,6 @@ func FindUserById(c context.Context, id string) (*models.User, error) {
 	return FromContext(c).FindUserById(id)
 }
 
-// FindUser allows to retrieve a user by its characteristics
-func FindUser(c context.Context, params params.M) (*models.User, error) {
-	return FromContext(c).FindUser(params)
-}
-
 // DeleteUser allows to delete a user by its id
 func DeleteUser(c context.Context, userId string) error {
 	return FromContext(c).DeleteUser(Current(c), userId)
