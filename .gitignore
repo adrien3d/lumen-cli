@@ -7,5 +7,6 @@ vendor/
 # Generated files
 generated/controllers/*.go
 generated/models/*.go
-generated/router/*.go
+generated/server/*.go
 generated/store/*.go
+generated/store/mongodb/*.go

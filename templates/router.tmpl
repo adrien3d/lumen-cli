@@ -45,24 +45,25 @@ func (a *API) SetupRouter() {
 	{
 		v1.GET("/", Index)
 
-		authentication := v1.Group("/auth")
-		{
-			authController := controllers.NewAuthController()
-			authentication.POST("/", authController.UserAuthentication)
-		}
-
-		users := v1.Group("/users")
-		{
-			userController := controllers.NewUserController()
-			users.POST("/reset/:email", userController.ResetPasswordRequest)
-			users.POST("/reset_password/:id/:resetKey", userController.ResetPasswordResponse)
-			users.GET("/:id/activate/:activationKey", userController.ActivateUser)
-			users.Use(authMiddleware)
-			users.GET("/:id", userController.GetUser)
-			users.Use(adminMiddleware)
-			users.POST("/", userController.CreateUser)
-			users.DELETE("/:id", userController.DeleteUser)
-			users.GET("/", userController.GetUsers)
-		}
+        {{- range . }}
+            {{ $sing := singularize .ModelName }}
+            {{ firstLower $sing }}s := v1.Group("/{{ firstLower .ModelName }}s")
+            {
+                {{ firstLower $sing }}s.Use(authMiddleware)
+                {{- range .Methods  }}
+                    {{- if eq . "Create" }}
+                        {{ firstLower $sing }}s.POST("/",{{ firstLower $sing }}Controller.{{ . }}{{ title $sing }})
+                    {{- else if eq . "Get" }}
+                        {{ firstLower $sing }}s.GET("/:id",{{ firstLower $sing }}Controller.{{ . }}{{ title $sing }})
+                    {{- else if eq . "GetAll" }}
+                        {{ firstLower $sing }}s.GET("/",{{ firstLower $sing }}Controller.{{ . }}{{ title $sing }})
+                    {{- else if eq . "Update" }}
+                        {{ firstLower $sing }}s.PUT("/:id",{{ firstLower $sing }}Controller.{{ . }}{{ title $sing }})
+                    {{- else if eq . "Delete" }}
+                        {{ firstLower $sing }}s.DELETE("/:id",{{ firstLower $sing }}Controller.{{ . }}{{ title $sing }})
+                    {{- end }}
+                {{- end }}
+            }
+        {{- end }}
 	}
 }

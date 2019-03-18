@@ -1,13 +1,19 @@
 package commands
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/abiosoft/ishell"
+	"github.com/adrien3d/lumen/utils"
 	"github.com/gedex/inflector"
 	"github.com/spf13/cobra"
+	"go/format"
+	"gopkg.in/godo.v2/util"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
+	"text/template"
 )
 
 func generateRouterFile(selectedModels []SelectedModel) {
@@ -19,7 +25,7 @@ func generateRouterFile(selectedModels []SelectedModel) {
 		fmt.Println()
 	}
 
-	/*path := filepath.Join("templates", "router.tmpl")
+	path := filepath.Join("templates", "router.tmpl")
 	body, _ := ioutil.ReadFile(path)
 	tmpl := template.Must(template.New("model").Option("missingkey=error").Funcs(funcMap).Parse(string(body)))
 
@@ -37,7 +43,7 @@ func generateRouterFile(selectedModels []SelectedModel) {
 	}
 	if err := ioutil.WriteFile(dstPath, src, 0644); err != nil {
 		fmt.Println(err)
-	}*/
+	}
 }
 
 func RouterCmd(cmd *cobra.Command, args []string) {

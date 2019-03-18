@@ -31,6 +31,7 @@ type Field struct {
 
 var funcMap = template.FuncMap{
 	"pluralize":   inflector.Pluralize,
+	"singularize": inflector.Singularize,
 	"title":       strings.Title,
 	"firstLower":  utils.FirstCharLower,
 	"toLower":     strings.ToLower,

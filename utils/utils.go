@@ -1,11 +1,13 @@
 package utils
 
 import (
+	"fmt"
 	"strings"
 )
 
 func Check(e error) {
 	if e != nil {
+		fmt.Println(e)
 		panic(e)
 	}
 }
