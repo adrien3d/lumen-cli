@@ -18,6 +18,7 @@ Define `export PATH=$PATH:$GOPATH/bin`
 ## Usage
 
 * Generate a first model with `lumen model`
+* For every generation, you have to set the correct namespace, for example `github.com/adrien3d/base-api`
 
 ### Auto mode
 * Select entities for each selected model and generate controller, store and router with `lumen generate`

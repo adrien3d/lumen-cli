@@ -1,14 +1,12 @@
 package server
 
 import (
-	"github.com/adrien3d/base-api/config"
+	"{{ $.Namespace }}/config"
+	"{{ $.Namespace }}/controllers"
+	"{{ $.Namespace }}/middlewares"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
-
-	"github.com/adrien3d/base-api/controllers"
-	"github.com/adrien3d/base-api/middlewares"
-
-	"github.com/gin-gonic/gin"
 )
 
 // Index is the default place

@@ -3,16 +3,17 @@ package utils
 import (
 	"bytes"
 	"fmt"
-	"github.com/abiosoft/ishell"
-	"github.com/gedex/inflector"
-	"github.com/serenize/snaker"
 	"go/format"
-	"gopkg.in/godo.v2/util"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
+
+	"github.com/abiosoft/ishell"
+	"github.com/gedex/inflector"
+	"github.com/serenize/snaker"
+	"gopkg.in/godo.v2/util"
 )
 
 // Check checks errors
@@ -49,6 +50,7 @@ var FuncMap = template.FuncMap{
 
 // SelectedModel is a structure that holds model name and selected methods
 type SelectedModel struct {
+	Namespace string
 	ModelName string
 	Methods   []string
 }
@@ -58,6 +60,9 @@ func SelectMethodsModels(typeName string) (selectedModels []SelectedModel) {
 	shell := ishell.New()
 
 	shell.Println("Generating " + typeName)
+
+	shell.Print("Namespace: ")
+	namespace := shell.ReadLine()
 
 	files, err := ioutil.ReadDir("generated/models")
 	if err != nil {
@@ -77,6 +82,7 @@ func SelectMethodsModels(typeName string) (selectedModels []SelectedModel) {
 
 	for _, file := range choices {
 		var selectedModel SelectedModel
+		selectedModel.Namespace = namespace
 		selectedModel.ModelName = fileNames[file]
 		//Step 2: Select methods to generate
 		methods := []string{"Create" + fileNames[file], "Get" + fileNames[file], "GetAll" + fileNames[file], "Update" + fileNames[file], "Delete" + fileNames[file]}
