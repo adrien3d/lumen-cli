@@ -7,16 +7,23 @@ import (
 )
 
 func main() {
+	var cmdNew = &cobra.Command{
+		Use:   `new [namespace]`,
+		Short: `Generating files`,
+		Long:  `Generates files from base-api`,
+		Args:  cobra.MinimumNArgs(1),
+		Run:   commands.BoilerplateCmd,
+	}
 	var cmdModel = &cobra.Command{
-		Use:   "model [name]",
+		Use:   `model [name]`,
 		Short: `Generating model`,
-		Long:  "Generates a model",
+		Long:  `Generates a model`,
 		Args:  cobra.MinimumNArgs(0),
 		Run:   commands.ModelCmd,
 	}
 
 	var cmdGenerate = &cobra.Command{
-		Use:   "generate [name]",
+		Use:   `generate [name]`,
 		Short: `Generating everything`,
 		Long:  `Generating everything from models and methods`,
 		Args:  cobra.MinimumNArgs(0),
@@ -24,7 +31,7 @@ func main() {
 	}
 
 	var cmdController = &cobra.Command{
-		Use:   "controller [name]",
+		Use:   `controller [name]`,
 		Short: `Generating controller`,
 		Long:  `Generates a controller with multiple methods`,
 		Args:  cobra.MinimumNArgs(0),
@@ -32,7 +39,7 @@ func main() {
 	}
 
 	var cmdRouter = &cobra.Command{
-		Use:   "router [name]",
+		Use:   `router [name]`,
 		Short: `Generating router`,
 		Long:  `Generates router methods`,
 		Args:  cobra.MinimumNArgs(0),
@@ -40,7 +47,7 @@ func main() {
 	}
 
 	var cmdStore = &cobra.Command{
-		Use:   "store [name]",
+		Use:   `store [name]`,
 		Short: `Generating store`,
 		Long:  `Generates store methods`,
 		Args:  cobra.MinimumNArgs(0),
@@ -48,9 +55,9 @@ func main() {
 	}
 
 	var rootCmd = &cobra.Command{
-		Use:   "lumen",
-		Short: "Lumen is a CLI that helps you generating API code for base-api"}
-	rootCmd.AddCommand(cmdModel, cmdGenerate, cmdController, cmdRouter, cmdStore)
+		Use:   `lumen`,
+		Short: `Lumen is a CLI that helps you generating API code for base-api`}
+	rootCmd.AddCommand(cmdNew, cmdModel, cmdGenerate, cmdController, cmdRouter, cmdStore)
 
 	err := rootCmd.Execute()
 	utils.Check(err)

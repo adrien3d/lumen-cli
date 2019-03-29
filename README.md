@@ -9,16 +9,16 @@ Define `export PATH=$PATH:$GOPATH/bin`
 
 ### Installing
 
-`git clone https://github.com/adrien3d/lumen.git` where you want to have it.
+`go get -u github.com/adrien3d/lumen`
 
-`cd lumen`
+`cd $GOPATH/src/github.com/adrien3d/lumen`
 
 `go install`
 
 ## Usage
 
+* To generate the project directory, just run `lumen new` with your namespace, for example `lumen new github.com/user/project`
 * Generate a first model with `lumen model`
-* For every generation, you have to set the correct namespace, for example `github.com/adrien3d/base-api`
 
 ### Auto mode
 * Select entities for each selected model and generate controller, store and router with `lumen generate`
@@ -32,6 +32,7 @@ Define `export PATH=$PATH:$GOPATH/bin`
 
 * [cobra](github.com/spf13/cobra) - A Commander for modern Go CLI interactions.
 * [ishell](github.com/abiosoft/ishell) - Library for creating interactive cli applications.
+* [base-api](github.com/adrien3d/base-api) - The boilerplate for GoLang api development
 
 ## License
 
