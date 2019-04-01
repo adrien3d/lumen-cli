@@ -1,6 +1,22 @@
-# Lumen
+<p align="center">
+    <a href="https://github.com/adrien3d/lumen-cli">
+        <img width="500px" src="https://raw.githubusercontent.com/adrien3d/lumen-cli/master/lumen-logo.png" />
+    </a>
+</p>
 
-Lumen is a CLI that allows you tou generate API with [base-api](https://github.com/adrien3d/base-api) framework, generating models, controllers, router and store.
+<h1 align="center">Lumen CLI</h1>
+
+<p align="center">
+    <a href="https://goreportcard.com/report/github.com/adrien3d/lumen-cli">
+        <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/adrien3d/lumen-api">
+    </a>
+    <a href="https://godoc.org/github.com/adrien3d/lumen-cli">
+        <img alt="latest release" src="https://godoc.org/github.com/adrien3d/lumen-api?status.svg">
+    </a>
+</p>
+
+
+Lumen is a CLI that allows you tou generate API with [lumen-api](https://github.com/adrien3d/lumen-api) framework, generating models, controllers, router and store.
 
 
 ### Prerequisites
@@ -32,7 +48,7 @@ Define `export PATH=$PATH:$GOPATH/bin`
 
 * [cobra](github.com/spf13/cobra) - A Commander for modern Go CLI interactions.
 * [ishell](github.com/abiosoft/ishell) - Library for creating interactive cli applications.
-* [base-api](github.com/adrien3d/base-api) - The boilerplate for GoLang api development
+* [lumen-api](github.com/adrien3d/lumen-api) - The boilerplate for GoLang api development
 
 ## License
 
