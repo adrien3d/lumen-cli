@@ -7,6 +7,9 @@
 <h1 align="center">Lumen CLI</h1>
 
 <p align="center">
+    <a href="https://github.com/adrien3d/lumen-api/blob/master/LICENSE.md">
+        <img alt="Go Report Card" src="https://img.shields.io/github/license/adrien3d/lumen-api.svg">
+    </a>
     <a href="https://goreportcard.com/report/github.com/adrien3d/lumen-cli">
         <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/adrien3d/lumen-api">
     </a>
