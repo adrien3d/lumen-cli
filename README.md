@@ -49,9 +49,9 @@ Define `export PATH=$PATH:$GOPATH/bin`
 
 ## Built With
 
-* [cobra](github.com/spf13/cobra) - A Commander for modern Go CLI interactions.
-* [ishell](github.com/abiosoft/ishell) - Library for creating interactive cli applications.
-* [lumen-api](github.com/adrien3d/lumen-api) - The boilerplate for GoLang api development
+* [cobra](https://github.com/spf13/cobra) - A Commander for modern Go CLI interactions.
+* [ishell](https://github.com/abiosoft/ishell) - Library for creating interactive cli applications.
+* [lumen-api](https://github.com/adrien3d/lumen-api) - The boilerplate for GoLang api development
 
 ## License
 
