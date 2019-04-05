@@ -17,7 +17,7 @@ import (
 )
 
 // Check checks errors
-func Check(e error) {
+func CheckErr(e error) {
 	if e != nil {
 		fmt.Println(e)
 		panic(e)
