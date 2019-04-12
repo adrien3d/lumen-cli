@@ -16,7 +16,7 @@ import (
 	"gopkg.in/godo.v2/util"
 )
 
-// Check checks errors
+// CheckErr checks error and print it if it exists
 func CheckErr(e error) {
 	if e != nil {
 		fmt.Println(e)
