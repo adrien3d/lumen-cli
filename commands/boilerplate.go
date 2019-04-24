@@ -34,7 +34,7 @@ func BoilerplateCmd(cmd *cobra.Command, args []string) {
 	}
 
 	// Step 2: Get lumen directory path from GOPATH environment variable
-	searchDir := os.Getenv("GOPATH") + `/src/github.com/adrien3d/lumen/base-api`
+	searchDir := os.Getenv("GOPATH") + `/src/github.com/adrien3d/lumen-api`
 	fmt.Println(`Base-api dir is: `, searchDir)
 
 	// Step 3: Copying files in a new directory
