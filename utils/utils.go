@@ -63,6 +63,10 @@ func SelectMethodsModels(typeName string) (selectedModels []SelectedModel) {
 
 	shell.Print("Namespace: ")
 	namespace := shell.ReadLine()
+	if len(namespace) == 0 {
+		shell.Println("Please enter your namespace (for example github.com/user/project)")
+		return nil
+	}
 
 	files, err := ioutil.ReadDir("models")
 	if err != nil {
@@ -78,7 +82,6 @@ func SelectMethodsModels(typeName string) (selectedModels []SelectedModel) {
 	choices := shell.Checklist(fileNames,
 		"Please select models you want to generate the matching store:",
 		nil)
-
 	if len(choices) == 0 {
 		shell.Println("Please choose at least one model (by pressing spacebar on each one you want to select)")
 		return nil
