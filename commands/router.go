@@ -10,7 +10,7 @@ import (
 func RouterCmd(cmd *cobra.Command, args []string) {
 	selectedModels := utils.SelectMethodsModels("router")
 
-	utils.GenerateFile("router.tmpl", "generated/server/router.go", selectedModels)
+	utils.GenerateFile("router.tmpl", "server/router.go", selectedModels)
 
 	os.Exit(1)
 }

@@ -42,7 +42,7 @@ func ModelCmd(cmd *cobra.Command, args []string) {
 	}
 
 	propertyNum := 0
-	for propertyNum < 50 {
+	for propertyNum < 10 {
 		// Step 1: choosing property name
 		shell.Print("Enter the property name: ")
 		field := Field{"", "", false, false}
@@ -90,7 +90,7 @@ func ModelCmd(cmd *cobra.Command, args []string) {
 		propertyNum += 1
 
 		if shell.MultiChoice([]string{"yes", "no"}, "Do you want to add a new property?") == 1 {
-			utils.GenerateFile("model.tmpl", "generated/models/"+snaker.CamelToSnake(model.Name)+".go", model)
+			utils.GenerateFile("model.tmpl", "models/"+snaker.CamelToSnake(model.Name)+".go", model)
 			os.Exit(1)
 		}
 	}

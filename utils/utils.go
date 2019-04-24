@@ -64,7 +64,7 @@ func SelectMethodsModels(typeName string) (selectedModels []SelectedModel) {
 	shell.Print("Namespace: ")
 	namespace := shell.ReadLine()
 
-	files, err := ioutil.ReadDir("generated/models")
+	files, err := ioutil.ReadDir("models")
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -12,7 +12,7 @@ func ControllerCmd(cmd *cobra.Command, args []string) {
 	selectedModels := utils.SelectMethodsModels("controller")
 
 	for _, selectedModel := range selectedModels {
-		utils.GenerateFile("controller.tmpl", "generated/controllers/"+strings.ToLower(selectedModel.ModelName)+".go", selectedModel)
+		utils.GenerateFile("controller.tmpl", "controllers/"+strings.ToLower(selectedModel.ModelName)+".go", selectedModel)
 	}
 
 	os.Exit(1)
