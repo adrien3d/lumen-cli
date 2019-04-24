@@ -60,5 +60,5 @@ func main() {
 	rootCmd.AddCommand(cmdNew, cmdModel, cmdGenerate, cmdController, cmdRouter, cmdStore)
 
 	err := rootCmd.Execute()
-	utils.Check(err)
+	utils.CheckErr(err)
 }

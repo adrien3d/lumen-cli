@@ -15,12 +15,12 @@ import (
 // ReplaceNamespace simply replace oldString by newString in file provided by path
 func ReplaceNamespace(path string, oldString string, newString string) error {
 	read, err := ioutil.ReadFile(path)
-	utils.Check(err)
+	utils.CheckErr(err)
 
 	newContents := strings.Replace(string(read), oldString, newString, -1)
 
 	err = ioutil.WriteFile(path, []byte(newContents), 0)
-	utils.Check(err)
+	utils.CheckErr(err)
 
 	return nil
 }
@@ -39,17 +39,17 @@ func BoilerplateCmd(cmd *cobra.Command, args []string) {
 
 	// Step 3: Copying files in a new directory
 	currentDir, err := os.Getwd()
-	utils.Check(err)
+	utils.CheckErr(err)
 
 	arguments := strings.Split(args[0], `/`)
 	projectDir := filepath.Join(currentDir, arguments[2])
 	fmt.Println("Project ", arguments[2], ` to be generated in `, projectDir)
 
 	if _, err := os.Stat(projectDir); os.IsNotExist(err) {
-		utils.Check(os.Mkdir(projectDir, 755))
+		utils.CheckErr(os.Mkdir(projectDir, 755))
 	}
 
-	utils.Check(utils.Copy(searchDir, projectDir))
+	utils.CheckErr(utils.Copy(searchDir, projectDir))
 
 	// Step 4: Select only Go files
 	filesList := []string{}
@@ -59,12 +59,12 @@ func BoilerplateCmd(cmd *cobra.Command, args []string) {
 		}
 		return nil
 	})
-	utils.Check(err)
+	utils.CheckErr(err)
 
 	// Step 5: Changing namespace in files
 	for _, file := range filesList {
 		//fmt.Println(`Changed namespace in: `, file)
-		utils.Check(ReplaceNamespace(file, `github.com/adrien3d/base-api`, args[0]))
+		utils.CheckErr(ReplaceNamespace(file, `github.com/adrien3d/base-api`, args[0]))
 	}
 
 	os.Exit(1)

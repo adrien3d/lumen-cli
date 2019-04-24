@@ -108,7 +108,7 @@ func GenerateFile(templateFile string, outputPath string, data interface{}) {
 
 	var buf bytes.Buffer
 	err := tmpl.Execute(&buf, data)
-	Check(err)
+	CheckErr(err)
 
 	src, _ := format.Source(buf.Bytes())
 	dstPath := filepath.Join(outputPath)
