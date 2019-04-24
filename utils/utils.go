@@ -78,7 +78,11 @@ func SelectMethodsModels(typeName string) (selectedModels []SelectedModel) {
 	choices := shell.Checklist(fileNames,
 		"Please select models you want to generate the matching store:",
 		nil)
-	fmt.Println(choices)
+
+	if len(choices) == 0 {
+		shell.Println("Please choose at least one model (by pressing spacebar on each one you want to select)")
+		return nil
+	}
 
 	for _, file := range choices {
 		var selectedModel SelectedModel
